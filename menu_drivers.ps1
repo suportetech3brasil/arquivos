@@ -6,10 +6,13 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     exit
 }
 
+# Define a politica de execucao para a sessao atual para permitir scripts baixados
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
 function Mostrar-MenuPrincipal {
     Clear-Host
     Write-Host "==========================================" -ForegroundColor Cyan
-    Write-Host "     SUPORTE TECH3 - DRIVERS SAMSUNG    " -ForegroundColor Cyan
+    Write-Host "      SUPORTE TECH3 - DRIVERS SAMSUNG     " -ForegroundColor Cyan
     Write-Host "==========================================" -ForegroundColor Cyan
     Write-Host "1) Samsung ProXpress M4020"
     Write-Host "2) Samsung ProXpress M4070"
@@ -27,6 +30,8 @@ function Baixar-Arquivo($url, $nome, $modeloPasta) {
     Write-Host "Baixando $nome..." -ForegroundColor Green
     try {
         Invoke-WebRequest -Uri $url -OutFile $destinoFull -ErrorAction Stop
+        # Desbloqueia o arquivo para evitar erro de seguranca do Windows
+        Unblock-File -Path $destinoFull
         return $destinoFull
     } catch {
         Write-Host "Erro ao baixar $nome. Verifique a conexao." -ForegroundColor Red
@@ -70,7 +75,10 @@ do {
                     if ($scriptLocal) {
                         Write-Host "Iniciando instalacao automatizada..." -ForegroundColor Yellow
                         Set-Location (Split-Path $scriptLocal)
-                        & $scriptLocal
+                        
+                        # Executa o script com bypass explicitamente para evitar bloqueios de zona
+                        & powershell.exe -ExecutionPolicy Bypass -File (Split-Path $scriptLocal -Leaf)
+                        
                         Write-Host "Processo concluido!" -ForegroundColor Green
                     }
                     Pause
@@ -82,6 +90,6 @@ do {
 
             } while ($sub -ne "v")
         }
+        # Adicione aqui os blocos switch para "1" (M4020) e "3" (M4080) seguindo a mesma logica
     }
 } while ($opcao -ne "q")
-
