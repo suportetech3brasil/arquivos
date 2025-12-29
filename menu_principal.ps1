@@ -16,8 +16,8 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 
 # --- CONFIGURACAO DO REPOSITORIO GITHUB ---
 $Config = @{
-    Usuario     = "vitorarrudaa"
-    Repositorio = "DownloadRemoto"
+    Usuario     = "suportetech3brasil"
+    Repositorio = "arquivos"
     Branch      = "main"
 }
 $Config.BaseUrl = "https://raw.githubusercontent.com/$($Config.Usuario)/$($Config.Repositorio)/$($Config.Branch)"
@@ -282,3 +282,4 @@ do {
     }
     
 } while ($true)
+
