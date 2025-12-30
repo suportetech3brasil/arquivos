@@ -102,8 +102,7 @@ function Remove-FilaDuplicada {
     # Remover filas que atendam QUALQUER uma destas condicoes:
     # 1. Nome EXATO do filtroDriver (ex: "Samsung CLP-680 Series")
     # 2. Nome do filtroDriver com variacao (ex: "Samsung CLP-680 Series (Copia 1)")
-    # 3. Tem o mesmo driver mas nome diferente do configurado
-    # 4. Drivers Universal Samsung que sobraram
+    # 3. Drivers Universal Samsung que sobraram
     $duplicatas = $todasImpressoras | Where-Object {
         $_.Name -ne $nomeConfigurado -and
         (
@@ -111,8 +110,6 @@ function Remove-FilaDuplicada {
             $_.Name -eq $filtroDriver -or
             # FiltroDriver com variacoes (Copia 1, Copia 2, etc)
             $_.Name -match "^$([regex]::Escape($filtroDriver))( \((C[oó]pia|Copy) \d+\))?$" -or
-            # Mesmo driver, nome diferente
-            ($_.DriverName -like "*$filtroDriver*" -and $_.Name -ne $nomeConfigurado) -or
             # Drivers Universal sobrando
             ($_.Name -like "*Samsung Universal Print Driver*" -and $_.DriverName -like "*Samsung Universal*")
         ) -and
@@ -433,3 +430,4 @@ Write-Host "========================================================" -Foregroun
 Write-Host ""
 
 Start-Sleep -Seconds 3
+
