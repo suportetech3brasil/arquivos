@@ -155,9 +155,31 @@ if ($instalarPrint) {
     Write-Host "[$etapaAtual/$totalEtapas] === DRIVER DE IMPRESSAO ===" -ForegroundColor Yellow
     Write-Host ""
     
-    # Coletar informacoes
+    # Coletar e validar nome da impressora
     $nomeImpressora = Read-Host "  -> Nome da impressora"
-    $enderecoIP = Read-Host "  -> Endereco IP"
+    
+    $impressoraExistente = Get-Printer -Name $nomeImpressora -ErrorAction SilentlyContinue
+    
+    if ($impressoraExistente) {
+        Write-Host "`n  [AVISO] Ja existe uma impressora com o nome '$nomeImpressora'" -ForegroundColor Yellow
+        Write-Host "`n  Detalhes da impressora existente:" -ForegroundColor Cyan
+        Write-Host "    IP atual: $($impressoraExistente.PortName)" -ForegroundColor Gray
+        Write-Host "    Driver: $($impressoraExistente.DriverName)" -ForegroundColor Gray
+        Write-Host "`n  1) Digitar outro nome"
+        Write-Host "  2) Cancelar instalacao"
+        $opcao = Read-Host "`n  Escolha"
+        
+        if ($opcao -eq "1") {
+            $nomeImpressora = Read-Host "`n  -> Novo nome da impressora"
+        } else {
+            Write-Host "`n  [INFO] Instalacao cancelada pelo usuario`n" -ForegroundColor Cyan
+            $etapaAtual++
+            Write-Host ""
+            return
+        }
+    }
+
+$enderecoIP = Read-Host "  -> Endereco IP"
     
     # Validar IP
     if ($enderecoIP -notmatch '^\d{1,3}(\.\d{1,3}){3}$') {
@@ -430,6 +452,7 @@ Write-Host "========================================================" -Foregroun
 Write-Host ""
 
 Start-Sleep -Seconds 3
+
 
 
 
